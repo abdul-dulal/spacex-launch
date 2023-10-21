@@ -11,6 +11,12 @@ const Filter = () => {
   const [launchStatus, setLaunchStatus] = useState("");
   const [isChecked, setIsChecked] = useState(false);
 
+  useEffect(() => {
+    axios.get("https://api.spacexdata.com/v3/launches").then((res) => {
+      setLaunch(res.data);
+    });
+  }, []);
+
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
     setSelectedValue("");
@@ -47,6 +53,8 @@ const Filter = () => {
         setSelectedValue={setSelectedValue}
         launchStatus={launchStatus}
         setLaunchStatus={setLaunchStatus}
+        isChecked={isChecked}
+        setIsChecked={setIsChecked}
       />
       <div className="row">
         {launch.length > 0 &&
@@ -66,8 +74,21 @@ const Filter = () => {
                   <h5 className="card-title title">{item.mission_name}</h5>
                   <p className="falcon">{item.rocket.rocket_id}</p>
                   <div className="mt-4 mb-4">
-                    <h6 className="lunch">Lunch Status</h6>
-                    <span>{}</span>
+                    <h6 className="lunch">Lunch Status :</h6>
+                    <span className="mt-3">
+                      {item?.launch_success ? (
+                        <button
+                          type="button"
+                          className="btn btn-success btn-sm"
+                        >
+                          Success
+                        </button>
+                      ) : (
+                        <button type="button" className="btn btn-danger btn-sm">
+                          Failded
+                        </button>
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>

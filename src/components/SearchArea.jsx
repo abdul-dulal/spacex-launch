@@ -8,6 +8,8 @@ const SearchArea = ({
   setSelectedValue,
   launchStatus,
   setLaunchStatus,
+  setIsChecked,
+  isChecked,
 }) => {
   const [launch, setLaunch] = useContext(launchContext);
 
@@ -24,10 +26,12 @@ const SearchArea = ({
   };
   const handleLaunchStatus = (e) => {
     setLaunchStatus(e.target.value);
+    setIsChecked(false);
     setSelectedValue("");
   };
   const handleLaunchDate = (e) => {
     setSelectedValue(e.target.value);
+    setIsChecked(false);
     setLaunchStatus("");
   };
 
