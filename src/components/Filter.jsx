@@ -1,39 +1,56 @@
 import { useState, useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import "./styles/global.scss";
+import { convertDate } from "../utils/convertDate";
 const Filter = () => {
   const [meal, setMeal] = useState([]);
-  const [data, setData] = useState();
+  const [searchItem, setSearchItem] = useState();
   const [selectedValue, setSelectedValue] = useState("");
-  useEffect(() => {
-    fetch("https://api.spacexdata.com/v3/launches")
-      .then((res) => res.json())
-      .then((data) => {
-        setMeal(data.slice(0, 20));
-      });
-  }, []);
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  const convertDate = (date) => {
-    const utcDate = new Date(date);
-    const localDate = utcDate.toLocaleString(undefined, options);
-    return localDate;
-  };
+  // const [isChecked, setIsChecked] = useState(false);
+
+  // useEffect(() => {
+  //   fetch("https://api.spacexdata.com/v3/launches")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setMeal(data.slice(0, 20));
+  //     });
+  // }, []);
+
+  // const handleCheckboxChange = () => {
+  //   setIsChecked(!isChecked);
+  //   if (isChecked == true) {
+  //     fetch(`https://api.spacexdata.com/v3/launches`)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setMeal(data);
+  //       });
+  //   } else {
+  //     fetch(`https://api.spacexdata.com/v3/launches/upcoming`)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setMeal(data);
+  //       });
+  //   }
+  // };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setData("");
-  };
-  useEffect(() => {
-    fetch(`https://api.spacexdata.com/v3/launches?${selectedValue}`)
+
+    fetch(`https://api.spacexdata.com/v3/launches?rocket_id=${searchItem}`)
       .then((res) => res.json())
       .then((data) => {
         setMeal(data.slice(0, 20));
       });
-  }, [selectedValue]);
+    setSearchItem("");
+  };
+  // useEffect(() => {
+  //   fetch(`https://api.spacexdata.com/v3/launches?${selectedValue}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setMeal(data.slice(0, 20));
+  //     });
+  // }, [selectedValue]);
+
   return (
     <div>
       <div className="form-check margin-auto">
@@ -41,6 +58,8 @@ const Filter = () => {
           type="checkbox"
           className="form-check-input"
           id="exampleCheckbox"
+          // checked={isChecked}
+          // onChange={handleCheckboxChange}
         />
         <label className="form-check-label" htmlFor="exampleCheckbox">
           Show upcomming only
@@ -56,8 +75,10 @@ const Filter = () => {
                 placeholder="Search..."
                 aria-label="Search"
                 aria-describedby="basic-addon2"
-                value={data}
-                onChange={(e) => setData(e.target.value)}
+                value={searchItem}
+                onChange={(e) =>
+                  setSearchItem(e.target.value.toLocaleLowerCase())
+                }
               />
               <div className="input-group-append ">
                 <span className="input-group-text" id="basic-addon2">
