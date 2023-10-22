@@ -19,13 +19,16 @@ const SearchArea = ({
 
   const handleSearch = (e) => {
     e.preventDefault();
+
     navigate("/");
-    fetch(`https://api.spacexdata.com/v3/launches?rocket_name=${searchItem}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setLaunch(data);
-        setIsLoading(true);
-      });
+    if (searchItem !== "") {
+      fetch(`https://api.spacexdata.com/v3/launches?rocket_name=${searchItem}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setLaunch(data);
+          setIsLoading(true);
+        });
+    }
     setSearchItem("");
   };
   const handleLaunchStatus = (e) => {

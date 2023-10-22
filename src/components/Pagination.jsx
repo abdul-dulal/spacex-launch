@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { convertDate } from "../utils/convertDate";
-import PaginatedList from "./Paginatedlist";
 
 function Pagination({ items }) {
   const page =
@@ -13,7 +12,7 @@ function Pagination({ items }) {
   return (
     <div>
       <div className="row">
-        {itemsToShow.length > 0 &&
+        {itemsToShow.length > 0 ? (
           itemsToShow.map((item, index) => (
             <div key={index} className="col-md-4 rounded-3">
               <div className="card mb-3">
@@ -49,14 +48,22 @@ function Pagination({ items }) {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <p className="title text-center my-5">No items found</p>
+        )}
       </div>
 
-      <PaginationLinks
-        currentPage={page}
-        itemsPerPage={itemsPerPage}
-        itemCount={items.length}
-      />
+      {items.length > 9 && (
+        <PaginationLinks
+          currentPage={page}
+          itemsPerPage={itemsPerPage}
+          itemCount={items.length}
+        />
+      )}
+      <p className="lunch text-center">
+        Created by the brilliant minds behind SpaceX
+      </p>
     </div>
   );
 }
@@ -65,21 +72,19 @@ function PaginationLinks({ currentPage, itemsPerPage, itemCount }) {
   const numPages = Math.ceil(itemCount / itemsPerPage);
 
   return (
-    <div className="d-flex justify-content-center my-3">
+    <div className="d-flex justify-content-center my-5">
       {Array.from({ length: numPages }, (_, i) => i + 1).map((page) => (
         <Link to={`?page=${page}`} key={page}>
           <nav aria-label="...">
-            <p className="pagination text ">
-              <span
-                className={`page-item text ${
-                  currentPage === page ? "active" : ""
-                }`}
+            <ul className="pagination  ">
+              <li
+                className={`page-item ${currentPage === page ? "active" : ""}`}
               >
                 <a className="page-link" href="#">
                   {page}
                 </a>
-              </span>
-            </p>
+              </li>
+            </ul>
           </nav>
         </Link>
       ))}
