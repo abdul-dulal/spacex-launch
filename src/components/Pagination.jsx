@@ -63,27 +63,23 @@ function Pagination({ items }) {
 
 function PaginationLinks({ currentPage, itemsPerPage, itemCount }) {
   const numPages = Math.ceil(itemCount / itemsPerPage);
+
   return (
-    <div className="d-flex">
+    <div className="d-flex justify-content-center my-3">
       {Array.from({ length: numPages }, (_, i) => i + 1).map((page) => (
         <Link to={`?page=${page}`} key={page}>
           <nav aria-label="...">
-            <ul className="pagination">
-              <li className="page-item disabled">
-                <a className="page-link">Previous</a>
-              </li>
-              <li className="page-item">
+            <p className="pagination text ">
+              <span
+                className={`page-item text ${
+                  currentPage === page ? "active" : ""
+                }`}
+              >
                 <a className="page-link" href="#">
                   {page}
                 </a>
-              </li>
-
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  Next
-                </a>
-              </li>
-            </ul>
+              </span>
+            </p>
           </nav>
         </Link>
       ))}
