@@ -6,5 +6,7 @@
 - Install all dependency **npm install**
 -  Run the app  **npm run dev**
 
+### Live Link (https://spacex-launch-nine.vercel.app/)
+
 
 
