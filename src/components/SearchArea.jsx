@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
-import { launchContext } from "../App";
+import { launchContext, loadingContext } from "../App";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SearchArea = ({
   selectedValue,
@@ -12,15 +13,18 @@ const SearchArea = ({
   isChecked,
 }) => {
   const [launch, setLaunch] = useContext(launchContext);
-
   const [searchItem, setSearchItem] = useState();
+  const [isLoading, setIsLoading] = useContext(loadingContext);
+  const navigate = useNavigate();
+
   const handleSearch = (e) => {
     e.preventDefault();
-
-    fetch(`https://api.spacexdata.com/v3/launches?rocket_id=${searchItem}`)
+    navigate("/");
+    fetch(`https://api.spacexdata.com/v3/launches?rocket_name=${searchItem}`)
       .then((res) => res.json())
       .then((data) => {
-        setLaunch(data.slice(0, 20));
+        setLaunch(data);
+        setIsLoading(true);
       });
     setSearchItem("");
   };
@@ -28,11 +32,13 @@ const SearchArea = ({
     setLaunchStatus(e.target.value);
     setIsChecked(false);
     setSelectedValue("");
+    navigate("/");
   };
   const handleLaunchDate = (e) => {
     setSelectedValue(e.target.value);
     setIsChecked(false);
     setLaunchStatus("");
+    navigate("/");
   };
 
   //fulter by date status
@@ -40,7 +46,10 @@ const SearchArea = ({
     if (selectedValue !== "") {
       axios
         .get(`https://api.spacexdata.com/v3/launches?${selectedValue}`)
-        .then((res) => setLaunch(res.data));
+        .then((res) => {
+          setLaunch(res.data);
+          setIsLoading(true);
+        });
     }
   }, [selectedValue]);
 
@@ -51,40 +60,43 @@ const SearchArea = ({
         .get(
           `https://api.spacexdata.com/v3/launches?launch_success=${launchStatus}`
         )
-        .then((res) => setLaunch(res.data));
+        .then((res) => {
+          setLaunch(res.data);
+          setIsLoading(true);
+        });
     }
   }, [launchStatus]);
   return (
     <div>
-      <div className="d-flex justify-content-between">
+      <div className="d-lg-flex d-sm-flex  justify-content-between mb-5 w-100 ">
         <div>
-          <form>
-            <div className="input-group mb-3">
+          <form onClick={handleSearch}>
+            <div className="d-flex">
               <input
                 type="text"
-                className="form-control"
+                className="form"
                 placeholder="Search..."
-                aria-label="Search"
                 aria-describedby="basic-addon2"
+                required
                 value={searchItem}
-                onChange={(e) =>
-                  setSearchItem(e.target.value.toLocaleLowerCase())
-                }
+                onChange={(e) => setSearchItem(e.target.value)}
               />
-              <div className="input-group-append ">
-                <span className="input-group-text" id="basic-addon2">
-                  <button type="submit" onClick={handleSearch}>
-                    <BsSearch />
-                  </button>
-                </span>
-              </div>
+
+              <button
+                id="basic-addon2"
+                style={{ height: "38px", padding: "3px" }}
+                className="bg-primary border-primary"
+                type="submit"
+              >
+                <BsSearch style={{ color: "white" }} />
+              </button>
             </div>
           </form>
         </div>
-        <div className="d-flex gap-5">
-          <div className="" style={{ width: "256px" }}>
+        <div className="d-lg-flex d-sm-flex  gap-3">
+          <div className="select">
             <select
-              className="form-select rounded-1 "
+              className="form-select rounded-1 select"
               aria-label="Default select example"
               value={launchStatus}
               onChange={handleLaunchStatus}
@@ -96,24 +108,19 @@ const SearchArea = ({
               <option value="true">Success</option>
             </select>
           </div>
-          <div
-            className=""
-            style={{
-              width: "256px",
-              height: "38px",
-              border: "2px solid #9747ff",
-            }}
-          >
+          <div className="select">
             <select
-              className="form-select w-100 h-100 rounded-1 "
+              className="form-select  "
               value={selectedValue}
               onChange={handleLaunchDate}
             >
               <option selected className="d-none date">
                 By Launch Date
               </option>
-              <option value="1">Last Week</option>
-              <option value="start=2017-01-01&final=2017-01-25">
+              <option value="start=2021-08-022&final=2021-08-30">
+                Last Week
+              </option>
+              <option value="start=2020-08-01&final=2020-08-30">
                 Last Month
               </option>
               <option value="launch_year=2020">Last Year</option>
